@@ -25,7 +25,7 @@ return [
      */
     'databases' => [
         'default' => [
-            'driver' => 'sqlite',
+            'driver' => 'postgres',
         ],
     ],
 
@@ -36,10 +36,13 @@ return [
      * the driver class and its connection options.
      */
     'drivers'   => [
-        'sqlite' => [
-            'driver'     => \Spiral\Database\Driver\SQLite\SQLiteDriver::class,
-            'connection' => 'sqlite:' . directory('root') . 'app.db',
-            'profiling'  => true,
+        'postgres' => [
+            'driver'     => \Spiral\Database\Driver\Postgres\PostgresDriver::class,
+            'options'    => [
+                'connection' => 'pgsql:host=localhost;port=5433;dbname=' . env('DB_NAME'),
+                'username'   => env('DB_USER'),
+                'password'   => env('DB_PASSWORD'),
+            ]
         ],
     ],
 ];

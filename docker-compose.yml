@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:12
+    environment:
+      POSTGRES_DB: rent_app
+      POSTGRES_USER: rent
+      POSTGRES_PASSWORD: 12345678900
+    volumes:
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:

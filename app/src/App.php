@@ -50,10 +50,7 @@ class App extends Kernel
         Framework\Http\RouterBootloader::class,
         Framework\Http\ErrorHandlerBootloader::class,
         Framework\Http\JsonPayloadsBootloader::class,
-        Framework\Http\CookiesBootloader::class,
         Framework\Http\SessionBootloader::class,
-        Framework\Http\CsrfBootloader::class,
-        Framework\Http\PaginationBootloader::class,
 
         // Databases
         Framework\Database\DatabaseBootloader::class,
@@ -63,10 +60,6 @@ class App extends Kernel
         Framework\Cycle\CycleBootloader::class,
         Framework\Cycle\ProxiesBootloader::class,
         Framework\Cycle\AnnotatedBootloader::class,
-
-        // Views and view translation
-        Framework\Views\ViewsBootloader::class,
-        Framework\Views\TranslatedCacheBootloader::class,
 
         // Additional dispatchers
         Framework\Jobs\JobsBootloader::class,
@@ -82,15 +75,14 @@ class App extends Kernel
         Framework\DebugBootloader::class,
         Framework\Debug\LogCollectorBootloader::class,
         Framework\Debug\HttpCollectorBootloader::class,
+
+        \Spiral\Router\Bootloader\AnnotatedRoutesBootloader::class
     ];
 
     /*
      * Application specific services and extensions.
      */
     protected const APP = [
-        Bootloader\LocaleSelectorBootloader::class,
-        Bootloader\RoutesBootloader::class,
-
         // fast code prototyping
         Prototype\PrototypeBootloader::class,
     ];

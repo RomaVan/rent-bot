@@ -4,6 +4,8 @@ http:
 
   workers:
     command: "php app.php"
+    pool.numWorkers: 1
+    pool.maxJobs:    1
 
 # queue and jobs
 jobs:
@@ -32,3 +34,7 @@ limit:
   services:
     http.maxMemory: 100
     jobs.maxMemory: 100
+
+env:
+  PHP_IDE_CONFIG: serverName=application.loc
+  XDEBUG_CONFIG: remote_host=localhost max_nesting_level=250 remote_enable=1 remote_connect_back=0 var_display_max_depth=5 idekey='PHPSTORM'
