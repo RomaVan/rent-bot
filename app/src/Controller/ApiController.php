@@ -1,10 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Clients\Telegram\Client\TelegramApiClient;
+use App\Client\Telegram\WebhookHandler;
+use Cycle\ORM\TransactionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Spiral\Prototype\Traits\PrototypeTrait;
@@ -15,7 +14,8 @@ class ApiController
     use PrototypeTrait;
 
     public function __construct(
-        private TelegramApiClient $telegramApiClient
+        private WebhookHandler $webhookHandler,
+        private TransactionInterface $transaction
     ) {}
 
     /**
@@ -25,9 +25,15 @@ class ApiController
     public function webhook(ServerRequestInterface $request): ResponseInterface
     {
         $body = $request->getParsedBody();
-        $info = $this->telegramApiClient->getWebhookInfo();
-        // TODO: parse and handle
-        $a = $info;
+
+        $this->webhookHandler->handle($body, $this->transaction);
+
+        try {
+            $this->transaction->run();
+        } catch (\Throwable $throwable) {
+            //TODO: Add logger
+        }
+
         return $this->response->json(
             [
                 'ok' => true

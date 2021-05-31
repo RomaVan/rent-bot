@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Unit\Communication;
 
-use App\Clients\Telegram\Client\TelegramApiClient;
+use App\Client\Telegram\TelegramApiClient;
 use App\Config\ClientConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
