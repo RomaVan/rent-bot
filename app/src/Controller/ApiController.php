@@ -31,14 +31,10 @@ class ApiController
         try {
             $this->transaction->run();
         } catch (\Throwable $throwable) {
+            $error = $throwable; // change type
             //TODO: Add logger
         }
 
-        return $this->response->json(
-            [
-                'ok' => true
-            ],
-            200
-        );
+        return $this->response->json(['ok' => true]);
     }
 }

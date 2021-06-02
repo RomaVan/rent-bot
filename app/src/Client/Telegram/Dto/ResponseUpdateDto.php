@@ -2,28 +2,47 @@
 
 namespace App\Client\Telegram\Dto;
 
+use Cycle\Annotated\Annotation\Column;
+use Cycle\Annotated\Annotation\Embeddable;
+use Cycle\Annotated\Annotation\Relation\Embedded;
 use DateTimeImmutable;
 
-class ResponseUpdateDto
+/** @Embeddable */
+final class ResponseUpdateDto
 {
     private function __construct(
+        /** @Column(type = "integer") */
         private int $updateId,
+        /** @Column(type = "integer") */
         private int $messageId,
-        private array $from,
+        /** @Column(type = "datetime") */
         private DateTimeImmutable $date,
+        /** @Column(type = "string") */
         private string $text,
+        private SenderInfoDto $from,
     ) {}
 
     public static function createFromResponse(array $response): self
     {
         $message = $response['message'];
-        $dateTime = new DateTimeImmutable($message['date']);
+        $dateTime = (new DateTimeImmutable())->setTimestamp($message['date']);
         return new self(
             $response['update_id'],
             $message['message_id'],
-            $message['from'],
             $dateTime,
-            $message['text']
+            $message['text'],
+            SenderInfoDto::createFromResponse($message['from']),
+        );
+    }
+
+    public static function createEmpty(): self
+    {
+        return new self(
+            0,
+            0,
+            new DateTimeImmutable(),
+            '',
+            SenderInfoDto::createEmpty(),
         );
     }
 
@@ -37,7 +56,7 @@ class ResponseUpdateDto
         return $this->messageId;
     }
 
-    public function getFrom(): array
+    public function getFrom(): SenderInfoDto
     {
         return $this->from;
     }
@@ -50,16 +69,5 @@ class ResponseUpdateDto
     public function getText(): string
     {
         return $this->text;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'updateId' => $this->getUpdateId(),
-            'messageId' => $this->getMessageId(),
-            'date' => $this->getDate()->getTimestamp(),
-            'text' => $this->getText(),
-            'from' => $this->getFrom(),
-        ];
     }
 }

@@ -12,7 +12,9 @@ class WebhookHandler
     {
         $responseDto = ResponseUpdateDto::createFromResponse($webhook);
 
-        $log =  TelegramApiUpdateEntity::createLog($responseDto->toArray());
+        $log = TelegramApiUpdateEntity::createLog($responseDto);
+
+        // todo add here command handler strategy
 
         $tr->persist($log);
     }
