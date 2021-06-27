@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Unit\Communication;
+namespace Tests\Unit\Telegram;
 
 use App\Client\Telegram\TelegramApiClient;
 use App\Config\ClientConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 
-// TODO: not unit test, uses for setup only now
 class TelegramApiClientTest extends TestCase
 {
     public function testConnect()

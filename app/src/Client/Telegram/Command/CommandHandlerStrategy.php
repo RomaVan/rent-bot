@@ -14,15 +14,16 @@ class CommandHandlerStrategy
         $this->executors = $executors;
     }
 
+    /** @throws ExecutorNotFoundForStrategyException */
     public function run(string $command, ResponseUpdateDto $updateDto): void
     {
         foreach ($this->executors as $executor) {
             if ($executor->supportedCommand() === $command) {
                 $executor->execute($command, $updateDto);
-                break;
+                return;
             }
-
-            throw new \RuntimeException('invalid command');// TODO: add custom
         }
+
+        throw new ExecutorNotFoundForStrategyException($command);
     }
 }
