@@ -6,6 +6,7 @@ use App\Client\Telegram\WebhookHandler;
 use Cycle\ORM\TransactionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Spiral\Prototype\Traits\PrototypeTrait;
 use Spiral\Router\Annotation\Route;
 
@@ -15,7 +16,8 @@ class ApiController
 
     public function __construct(
         private WebhookHandler $webhookHandler,
-        private TransactionInterface $transaction
+        private TransactionInterface $transaction,
+        private LoggerInterface $logger
     ) {}
 
     /**
@@ -30,9 +32,8 @@ class ApiController
 
         try {
             $this->transaction->run();
-        } catch (\Throwable $throwable) {
-            $error = $throwable; // change type
-            //TODO: Add logger
+        } catch (\Error $error) {
+            $this->logger->error('Cannot handle telegram request', $error->getTrace());
         }
 
         return $this->response->json(['ok' => true]);

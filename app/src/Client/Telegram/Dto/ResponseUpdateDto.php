@@ -20,6 +20,10 @@ final class ResponseUpdateDto
         /** @Column(type = "string") */
         private string $text,
         private SenderInfoDto $from,
+        /** @Column(type = "integer") */
+        private ?int $chatId,
+        /** @Column(type = "string") */
+        private ?string $username,
     ) {}
 
     public static function createFromResponse(array $response): self
@@ -32,6 +36,8 @@ final class ResponseUpdateDto
             $dateTime,
             $message['text'],
             SenderInfoDto::createFromResponse($message['from']),
+            $message['from']['id'],
+            $message['from']['username'],
         );
     }
 
@@ -43,6 +49,8 @@ final class ResponseUpdateDto
             new DateTimeImmutable(),
             '',
             SenderInfoDto::createEmpty(),
+            null,
+            null
         );
     }
 
@@ -69,5 +77,15 @@ final class ResponseUpdateDto
     public function getText(): string
     {
         return $this->text;
+    }
+
+    public function getChatId(): ?int
+    {
+        return $this->chatId;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
     }
 }

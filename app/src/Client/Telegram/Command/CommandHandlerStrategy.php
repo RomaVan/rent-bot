@@ -2,6 +2,8 @@
 
 namespace App\Client\Telegram\Command;
 
+use App\Client\Telegram\Dto\ResponseUpdateDto;
+
 class CommandHandlerStrategy
 {
     /** @var CommandExecutorInterface[] */
@@ -12,11 +14,11 @@ class CommandHandlerStrategy
         $this->executors = $executors;
     }
 
-    public function run(string $command): void
+    public function run(string $command, ResponseUpdateDto $updateDto): void
     {
         foreach ($this->executors as $executor) {
             if ($executor->supportedCommand() === $command) {
-                $executor->execute($command);
+                $executor->execute($command, $updateDto);
                 break;
             }
 

@@ -85,5 +85,6 @@ class App extends Kernel
     protected const APP = [
         // fast code prototyping
         Prototype\PrototypeBootloader::class,
+        Bootloader\TelegramCommandsBootloader::class
     ];
 }

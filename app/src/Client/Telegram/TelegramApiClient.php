@@ -17,25 +17,22 @@ class TelegramApiClient
         $this->client = $this->createClient();
     }
 
-    public function getBotInfo()
-    {
-
-        $res = $this->client->get('getMe');
-        $body = $res->getBody()->getContents();
-
-        return $body;
-    }
-
     public function setWebhook(): array
     {
         $webhookUrl = $this->clientConfig->getTelegram()['webhookUrl'] ?? throw new RuntimeException('set custom! not set url webhook');
-        $response = $this->client->post('setWebhook', [
-            RequestOptions::JSON => ['url' => $webhookUrl]
-        ]);
+        $response = $this->client->post(
+            'setWebhook',
+            $this->formatJsonStructure(['url' => $webhookUrl])
+        );
 
         $content = $response->getBody()->getContents();
 
         return json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public function sendMessage(array $message): void
+    {
+        $this->client->post('sendMessage', $this->formatJsonStructure($message));
     }
 
     public function getWebhookInfo(): array
@@ -58,17 +55,22 @@ class TelegramApiClient
 
     private function createClient(): Client
     {
-//        $token = $this->clientConfig->getTelegram()['key']; //TODO: move to value injection
-        $token ='1736513094:AAFomYBMPpbPn5j9UmKLuHI5K7MB8RN1sA4';
+        $token = $this->clientConfig->getTelegram()['key']; //TODO: move to value injection
         $baseUri = sprintf('https://api.telegram.org/bot%s/', $token);
         $client = new Client(
             [
                 'base_uri' => $baseUri,
-                'timeout' => 2.0,
+                'timeout' => 15.0,
             ]
         );
 
         return $client;
+    }
 
+    private function formatJsonStructure(array $data): array
+    {
+        return [
+            RequestOptions::JSON => $data
+        ];
     }
 }
