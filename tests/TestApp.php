@@ -27,4 +27,9 @@ class TestApp extends App
     {
         return $this->container->get($alias, $context);
     }
+
+    public function mock(string $alias, object $class): void
+    {
+        $this->container->bind($alias, $class);
+    }
 }

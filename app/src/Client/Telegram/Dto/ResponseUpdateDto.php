@@ -4,7 +4,6 @@ namespace App\Client\Telegram\Dto;
 
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Embeddable;
-use Cycle\Annotated\Annotation\Relation\Embedded;
 use DateTimeImmutable;
 
 /** @Embeddable */
@@ -20,10 +19,6 @@ final class ResponseUpdateDto
         /** @Column(type = "string") */
         private string $text,
         private SenderInfoDto $from,
-        /** @Column(type = "integer") */
-        private ?int $chatId,
-        /** @Column(type = "string") */
-        private ?string $username,
     ) {}
 
     public static function createFromResponse(array $response): self
@@ -35,9 +30,7 @@ final class ResponseUpdateDto
             $message['message_id'],
             $dateTime,
             $message['text'],
-            SenderInfoDto::createFromResponse($message['from']),
-            $message['from']['id'],
-            $message['from']['username'],
+            SenderInfoDto::createFromResponse($message['from'])
         );
     }
 
@@ -48,9 +41,7 @@ final class ResponseUpdateDto
             0,
             new DateTimeImmutable(),
             '',
-            SenderInfoDto::createEmpty(),
-            null,
-            null
+            SenderInfoDto::createEmpty()
         );
     }
 
@@ -77,15 +68,5 @@ final class ResponseUpdateDto
     public function getText(): string
     {
         return $this->text;
-    }
-
-    public function getChatId(): ?int
-    {
-        return $this->chatId;
-    }
-
-    public function getUsername(): ?string
-    {
-        return $this->username;
     }
 }

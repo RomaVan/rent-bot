@@ -1,7 +1,7 @@
 <?php
 /**
  * {project-name}
- * 
+ *
  * @author {author-name}
  */
 declare(strict_types=1);
@@ -18,7 +18,10 @@ class ClientConfig extends InjectableConfig
      * @internal For internal usage. Will be hydrated in the constructor.
      */
     protected $config = [
-        'telegram' => []
+        'telegram' => [
+            'key',
+            'webhookUrl'
+        ]
     ];
 
     /**
@@ -26,6 +29,6 @@ class ClientConfig extends InjectableConfig
      */
     public function getTelegram(): array
     {
-        return $this->config['telegram'];
+        return $this->config['telegram'] ?? [];
     }
 }

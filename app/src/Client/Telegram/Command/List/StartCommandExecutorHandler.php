@@ -3,15 +3,16 @@
 namespace App\Client\Telegram\Command\List;
 
 use App\Client\Telegram\Command\CommandExecutorInterface;
+use App\Client\Telegram\Connector\TelegramClientInterface;
+use App\Client\Telegram\Dto\RequestMessageDto;
 use App\Client\Telegram\Dto\ResponseUpdateDto;
-use App\Client\Telegram\TelegramApiClient;
 use App\Service\RegistrationService;
 
 class StartCommandExecutorHandler implements CommandExecutorInterface
 {
     public function __construct(
         private RegistrationService $registrationService,
-        private TelegramApiClient $telegramApiClient
+        private TelegramClientInterface $telegramApiClient
     ) {}
 
     public function supportedCommand(): string
@@ -24,10 +25,7 @@ class StartCommandExecutorHandler implements CommandExecutorInterface
         $user = $this->registrationService->registerNew($updateDto);
 
         $this->telegramApiClient->sendMessage(
-            [
-                'chat_id' => $user->getId(),
-                'text' => 'success'
-            ]
+            RequestMessageDto::create($user->getId(), 'success')
         );
     }
 }

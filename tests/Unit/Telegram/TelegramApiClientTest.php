@@ -2,29 +2,30 @@
 
 namespace Tests\Unit\Telegram;
 
-use App\Client\Telegram\TelegramApiClient;
-use App\Config\ClientConfig;
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Client\Telegram\Connector\TelegramApiClient;
+use App\Client\Telegram\Dto\RequestMessageDto;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
 
 class TelegramApiClientTest extends TestCase
 {
-    public function testConnect()
+    public function testSendMessage(): void
     {
+        $mock = new MockHandler(
+            [
+                new Response(200, [], 'test'),
+            ]
+        );
 
-        /** @var ClientConfig&MockObject $configMock */
-        $configMock = $this->createMock(ClientConfig::class);
-        $configMock->method('getTelegram')->willReturn([
-           'key' => 'test',
-           'webhookUrl' => 'https://ngrok.io/e2e3/webhook'
-        ]);
+        $handlerStack = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handlerStack]);
+        $tgClient = new TelegramApiClient($client);
 
-        $client = new TelegramApiClient($configMock);
-        $responseDelete = $client->deleteWebhook();
-        $resSet= $client->setWebhook();
-        $resInfo = $client->getWebhookInfo();
+        $response = $tgClient->sendMessage(RequestMessageDto::create(123, 'test'));
 
-
-        $this->assertNotNull('d');
+        $this->assertSame(200, $response->getStatusCode());
     }
 }

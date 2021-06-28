@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Cycle\ORM\TransactionInterface;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\Environment;
@@ -37,7 +38,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
-        $this->app = $this->makeApp();
+        $this->app = $this->initApp();
         $this->http = $this->app->get(Http::class);
         $this->views = $this->app->get(ViewsInterface::class);
         $this->app->get(TranslatorInterface::class)->setLocale('en');
@@ -53,10 +54,17 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
-    protected function makeApp(array $env = []): TestApp
+    private function initApp(): TestApp
+    {
+        $app = $this->makeApp();
+        $app->mock(TransactionInterface::class, $this->createStub(TransactionInterface::class));
+
+        return  $app;
+    }
+
+    protected function makeApp(array $env = ['ENV' => 'testing']): TestApp
     {
         $root = dirname(__DIR__);
-
         return TestApp::init([
             'root' => $root,
             'app' => $root . '/app',
